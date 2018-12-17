@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: rss-site
+  labels:
+    app: web
+spec:
+  containers:
+    – name: front-end
+    image: kubernetes-bootcamp
+    ports:
+        – containerPort: 80
+    – name: rss-reader
+    image: gcr.io/google-samples/kubernetes-bootcamp:v1
+    ports:
+        – containerPort: 88
