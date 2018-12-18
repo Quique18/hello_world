@@ -1,10 +1,12 @@
 apiVersion: v1
 kind: Pod
-metadata: 
-  labels: 
-    app: web
+metadata:
   name: dockerkube
-spec: 
-  containers: 
-  - name: dockerkube
-    image: quique18/docker/dockerkube
+  labels:
+    app: web
+spec:
+  containers:
+  - image: quique18/docker:dockerkube
+    name: dockerkube
+    ports:
+    - containerPort: 80
