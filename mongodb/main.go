@@ -31,7 +31,7 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 
 // Display all from the people var
 func GetPeople(w http.ResponseWriter, r *http.Request) {
-    //w.Write([]byte(result))
+    w.Write((json.NewEncoder(w).Encode(result)))
 }
 
 // Display a single data
@@ -94,7 +94,7 @@ func main() {
 
 	fmt.Println("Person: ", result)
 
-	
+
     router := mux.NewRouter()
     router.HandleFunc("/", Welcome).Methods("GET")
     router.HandleFunc("/people", GetPeople).Methods("GET")
