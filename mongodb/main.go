@@ -16,6 +16,7 @@ type Person struct {
     Lastname  string   `json:"lastname,omitempty"`
     Address   *Address `json:"address,omitempty"`
 }
+
 type Address struct {
     City  string `json:"city,omitempty"`
     State string `json:"state,omitempty"`
@@ -34,9 +35,10 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 // Display all from the people var
 func GetPeople(w http.ResponseWriter, r *http.Request) {
 err = session.DB("PruebaDB").C("person").Find(nil).All(&result)
+
     if err != nil {
     	log.Fatal(err)
-	}
+    }
 
     json.NewEncoder(w).Encode(result)
 }
@@ -58,33 +60,33 @@ id := vars["id"]
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
 id := vars["id"]
-w.Write([]byte("Persona Creada!\n"))
+
+	w.Write([]byte("Persona Creada!\n"))
 	c := session.DB("PruebaDB").C("person")
 	err = c.Insert(&Person{Id: id, Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
+
 	 if err != nil {
 	 		log.Fatal(err)
 	 }
-
-
 }
 
 // Delete an item
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
-idd := vars["id"]
-	err = session.DB("PruebaDB").C("person").Remove( bson.M{"Id": idd})
+id := vars["id"]
+	err = session.DB("PruebaDB").C("person").Remove( bson.M{"id": id})
 
 if err != nil {
 	log.Fatal(err)
 }
 }
 
-
 // main function to boot up everything
 func main() {
 	c := session.DB("PruebaDB").C("person")
 	err = c.Insert(&Person{Id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
 	&Person{Id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
+
 	if err != nil {
 	 	log.Fatal(err)
 	}
