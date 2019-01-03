@@ -11,7 +11,7 @@ import (
 
 // The person Type (more like an object)
 type Person struct {
-    id        string   `json:"id,omitempty"`
+    Id        string   `json:"id,omitempty"`
     Firstname string   `json:"firstname,omitempty"`
     Lastname  string   `json:"lastname,omitempty"`
     Address   *Address `json:"address,omitempty"`
@@ -56,11 +56,11 @@ id := vars["id"]
 
 // create a new item
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
-//vars := mux.Vars(r)
-//id := vars["ID"]
+vars := mux.Vars(r)
+id := vars["id"]
 w.Write([]byte("Persona Creada!\n"))
 	c := session.DB("PruebaDB").C("person")
-	err = c.Insert(&Person{id: "6", Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
+	err = c.Insert(&Person{Id: id, Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
 	 if err != nil {
 	 		log.Fatal(err)
 	 }
@@ -72,7 +72,7 @@ w.Write([]byte("Persona Creada!\n"))
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
 idd := vars["id"]
-	err = session.DB("PruebaDB").C("person").Remove( bson.M{"id": idd})
+	err = session.DB("PruebaDB").C("person").Remove( bson.M{"Id": idd})
 
 if err != nil {
 	log.Fatal(err)
@@ -83,8 +83,8 @@ if err != nil {
 // main function to boot up everything
 func main() {
 	c := session.DB("PruebaDB").C("person")
-	err = c.Insert(&Person{id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
-	&Person{id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
+	err = c.Insert(&Person{Id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
+	&Person{Id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
 	if err != nil {
 	 	log.Fatal(err)
 	}
