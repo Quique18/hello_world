@@ -5,13 +5,13 @@ import (
     "github.com/gorilla/mux"
     "log"
     "net/http"
-	"gopkg.in/mgo.v2"
-        "gopkg.in/mgo.v2/bson"
+    "gopkg.in/mgo.v2"
+    "gopkg.in/mgo.v2/bson"
 )
 
 // The person Type (more like an object)
 type Person struct {
-    ID        string   `json:"id,omitempty"`
+    id        string   `json:"id,omitempty"`
     Firstname string   `json:"firstname,omitempty"`
     Lastname  string   `json:"lastname,omitempty"`
     Address   *Address `json:"address,omitempty"`
@@ -44,9 +44,9 @@ err = session.DB("PruebaDB").C("person").Find(nil).All(&result)
 // Display a single data
 func GetPerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
-id := vars["ID"]
+id := vars["id"]
 
-    err = session.DB("PruebaDB").C("person").Find( bson.M{"ID": id}).All(&resultId)
+    err = session.DB("PruebaDB").C("person").Find( bson.M{"id": id}).All(&resultId)
     if err != nil {
     	log.Fatal(err)
 	}
@@ -60,7 +60,7 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 //id := vars["ID"]
 w.Write([]byte("Persona Creada!\n"))
 	c := session.DB("PruebaDB").C("person")
-	err = c.Insert(&Person{ID: "6", Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
+	err = c.Insert(&Person{id: "6", Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
 	 if err != nil {
 	 		log.Fatal(err)
 	 }
@@ -72,7 +72,7 @@ w.Write([]byte("Persona Creada!\n"))
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
 idd := vars["id"]
-	err = session.DB("PruebaDB").C("person").Remove( bson.M{"ID": idd})
+	err = session.DB("PruebaDB").C("person").Remove( bson.M{"id": idd})
 
 if err != nil {
 	log.Fatal(err)
@@ -82,15 +82,12 @@ if err != nil {
 
 // main function to boot up everything
 func main() {
-
-	//defer session.Close()
-
-	//c := session.DB("PruebaDB").C("person")
-	// err = c.Insert(&Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
-	// &Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
-	// if err != nil {
-	// 		log.Fatal(err)
-	//}
+	c := session.DB("PruebaDB").C("person")
+	err = c.Insert(&Person{id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
+	&Person{id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
+	if err != nil {
+	 	log.Fatal(err)
+	}
 
     router := mux.NewRouter()
     router.HandleFunc("/", Welcome).Methods("GET")
