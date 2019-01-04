@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -38,7 +37,8 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 	err = session.DB("PruebaDB").C("person").Find(nil).All(&result)
 
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
 	}
 
 	json.NewEncoder(w).Encode(result)
@@ -51,7 +51,8 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 
 	err = session.DB("PruebaDB").C("person").Find(bson.M{"id": id}).All(&resultId)
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
 	}
 
 	json.NewEncoder(w).Encode(resultId)
@@ -66,7 +67,8 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	err = c.Insert(&Person{Id: id, Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
 
 	if err != nil {
-		log.Fatal(err)
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
 	}
 	w.Write([]byte("Persona Creada!\n"))
 }
@@ -107,10 +109,6 @@ func main() {
 	c := session.DB("PruebaDB").C("person")
 	err = c.Insert(&Person{Id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
 		&Person{Id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", Welcome).Methods("GET")
