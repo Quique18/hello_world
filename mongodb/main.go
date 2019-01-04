@@ -61,24 +61,28 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
 id := vars["id"]
 
-	w.Write([]byte("Persona Creada!\n"))
 	c := session.DB("PruebaDB").C("person")
 	err = c.Insert(&Person{Id: id, Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
 
 	 if err != nil {
 	 		log.Fatal(err)
-	 }
+     }
+     w.Write([]byte("Persona Creada!\n"))
 }
 
 // Delete an item
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
 vars := mux.Vars(r)
 id := vars["id"]
-	err = session.DB("PruebaDB").C("person").Remove( bson.M{"id": id})
 
-if err != nil {
-	log.Fatal(err)
-}
+	err = session.DB("PruebaDB").C("person").Remove( bson.M{"id": id} )
+
+    if err != nil {
+        w.WriteHeader(500)
+        w.Write([]byte(err.Error()))
+    }
+    
+    w.Write([]byte("Persona Borrada!\n"))
 }
 
 // main function to boot up everything
