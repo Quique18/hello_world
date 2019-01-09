@@ -10,3 +10,7 @@ spec:
     name: dockerkube
     ports:
     - containerPort: 8000
+  - image: mongo
+    name: mongodb
+    ports:
+    - containerPort: 8002
