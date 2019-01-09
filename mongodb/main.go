@@ -9,7 +9,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// The person Type (more like an object)
 type Person struct {
 	Id        string   `json:"id,omitempty"`
 	Firstname string   `json:"firstname,omitempty"`
@@ -32,7 +31,6 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome!\n"))
 }
 
-// Display all from the people var
 func GetPeople(w http.ResponseWriter, r *http.Request) {
 	err = session.DB("PruebaDB").C("person").Find(nil).All(&result)
 
@@ -44,7 +42,6 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
-// Display a single data
 func GetPerson(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -58,13 +55,14 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resultId)
 }
 
-// create a new item
 func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
+        firstnm := vars["firstnm"]
+	lastnm := vars["lastnm"]
 
 	c := session.DB("PruebaDB").C("person")
-	err = c.Insert(&Person{Id: id, Firstname: "Create", Lastname: "Create", Address: &Address{City: "City X", State: "State X"}})
+	err = c.Insert(&Person{Id: id, Firstname: firstnm, Lastname: lastnm, Address: &Address{City: "City X", State: "State X"}})
 
 	if err != nil {
 		w.WriteHeader(500)
@@ -73,7 +71,6 @@ func CreatePerson(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Persona Creada!\n"))
 }
 
-// Delete an item
 func DeletePerson(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -104,17 +101,16 @@ func UpdatePerson(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Persona Actualizada!\n"))
 }
 
-// main function to boot up everything
 func main() {
-	c := session.DB("PruebaDB").C("person")
-	err = c.Insert(&Person{Id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
-		&Person{Id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
+	//c := session.DB("PruebaDB").C("person")
+	//err = c.Insert(&Person{Id: "1", Firstname: "John", Lastname: "Doe", Address: &Address{City: "City X", State: "State X"}},
+	//	&Person{Id: "2", Firstname: "Koko", Lastname: "Doe", Address: &Address{City: "City Z", State: "State Y"}})
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", Welcome).Methods("GET")
 	router.HandleFunc("/people", GetPeople).Methods("GET")
 	router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
-	router.HandleFunc("/people/add/{id}", CreatePerson).Methods("POST")
+	router.HandleFunc("/people/add/{id}/{firstnm}/{lastnm}", CreatePerson).Methods("POST")
 	router.HandleFunc("/people/upd/{id}/{firstnm}/{lastnm}", UpdatePerson).Methods("PUT")
 	router.HandleFunc("/people/del/{id}", DeletePerson).Methods("DELETE")
 	http.ListenAndServe(":8001", router)
