@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongodb
+  labels:
+    app: web
+spec:
+  containers:
+  - image: mongo
+    name: mongodb
+    ports:
+    - containerPort: 8002
