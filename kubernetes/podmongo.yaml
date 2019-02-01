@@ -3,10 +3,10 @@ kind: Pod
 metadata:
   name: mongodb
   labels:
-    app: web
+    app: mongodb
 spec:
   containers:
   - image: mongo
     name: mongodb
     ports:
-    - containerPort: 8002
+    - containerPort: 27017
