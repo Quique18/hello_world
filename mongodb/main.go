@@ -25,7 +25,7 @@ var people []Person
 var result []Person
 var resultId []Person
 
-var session, err = mgo.Dial("localhost")
+var session, err = mgo.Dial("http://mongodbservice:27017")
 
 func Welcome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome!\n"))
@@ -47,6 +47,19 @@ func GetPerson(w http.ResponseWriter, r *http.Request) {
 	id := vars["id"]
 
 	err = session.DB("PruebaDB").C("person").Find(bson.M{"id": id}).All(&resultId)
+	if err != nil {
+		w.WriteHeader(500)
+		w.Write([]byte(err.Error()))
+	}
+
+	json.NewEncoder(w).Encode(resultId)
+}
+
+func GetPersonByName(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	nm := vars["nm"]
+
+	err = session.DB("PruebaDB").C("person").Find(bson.M{"firstname": nm}).All(&resultId)
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
@@ -110,6 +123,7 @@ func main() {
 	router.HandleFunc("/", Welcome).Methods("GET")
 	router.HandleFunc("/people", GetPeople).Methods("GET")
 	router.HandleFunc("/people/{id}", GetPerson).Methods("GET")
+	router.HandleFunc("/people/byname/{nm}", GetPersonByName).Methods("GET")
 	router.HandleFunc("/people/add/{id}/{firstnm}/{lastnm}", CreatePerson).Methods("POST")
 	router.HandleFunc("/people/upd/{id}/{firstnm}/{lastnm}", UpdatePerson).Methods("PUT")
 	router.HandleFunc("/people/del/{id}", DeletePerson).Methods("DELETE")
